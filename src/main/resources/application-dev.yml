@@ -15,3 +15,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  cloud:
+    aws:
+      sqs:
+        region: ${AWS_REGION}
+        endpoint: ${AWS_SQS_ENDPOINT}
+
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
+
+aws:
+  sqs:
+    queue-name: ${AWS_SQS_QUEUE_NAME}
