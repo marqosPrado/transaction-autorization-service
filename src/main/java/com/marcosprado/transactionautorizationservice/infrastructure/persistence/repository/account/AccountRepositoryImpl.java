@@ -1,4 +1,4 @@
-package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository;
+package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository.account;
 
 import com.marcosprado.transactionautorizationservice.domain.model.Account;
 import com.marcosprado.transactionautorizationservice.domain.repository.AccountRepository;

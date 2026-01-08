@@ -1,4 +1,4 @@
-package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository;
+package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository.account;
 
 import com.marcosprado.transactionautorizationservice.infrastructure.persistence.entity.AccountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
