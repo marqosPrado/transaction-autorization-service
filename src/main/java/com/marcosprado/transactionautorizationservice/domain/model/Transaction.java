@@ -1,5 +1,8 @@
 package com.marcosprado.transactionautorizationservice.domain.model;
 
+import com.marcosprado.transactionautorizationservice.domain.util.MoneyConverter;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,15 +39,12 @@ public class Transaction {
         this.amountCents = amountCents;
         this.currency = currency;
         this.createdAt = LocalDateTime.now();
+        this.status = TransactionStatus.PROCESS;
     }
 
-    public static Transaction create(UUID accountId, TransactionOperationType type, Long amountCents, String currency) {
-        return new Transaction(
-                accountId,
-                type,
-                amountCents,
-                currency
-        );
+    public static Transaction create(UUID accountId, TransactionOperationType type, BigDecimal amount, String currency) {
+        Long amountCents = MoneyConverter.decimalToCents(amount);
+        return new Transaction(accountId, type, amountCents, currency);
     }
 
     public UUID getId() {
