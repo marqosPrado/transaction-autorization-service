@@ -21,6 +21,10 @@ spring:
       sqs:
         region: ${AWS_REGION}
         endpoint: ${AWS_SQS_ENDPOINT}
+        listener:
+          max-concurrent-messages: 10
+          max-messages-per-poll: 10
+          poll-timeout: 10
 
       credentials:
         access-key: ${AWS_ACCESS_KEY_ID}

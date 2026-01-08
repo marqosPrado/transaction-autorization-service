@@ -16,13 +16,13 @@ public class SqsConfig {
     @Value("${spring.cloud.aws.sqs.region}")
     private String region;
 
-    @Value("${aws.access-key-id}")
+    @Value("${spring.cloud.aws.credentials.access-key}")
     private String accessKeyId;
 
-    @Value("${aws.secret-access-key}")
+    @Value("${spring.cloud.aws.credentials.secret-key}")
     private String secretAccessKey;
 
-    @Value("${aws.sqs.endpoint}")
+    @Value("${spring.cloud.aws.sqs.endpoint}")
     private String sqsEndpoint;
 
     @Bean
