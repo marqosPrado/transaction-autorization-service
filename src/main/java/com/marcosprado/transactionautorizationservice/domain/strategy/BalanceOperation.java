@@ -4,10 +4,9 @@ import com.marcosprado.transactionautorizationservice.domain.model.Account;
 import com.marcosprado.transactionautorizationservice.domain.model.Transaction;
 import com.marcosprado.transactionautorizationservice.domain.repository.AccountRepository;
 import com.marcosprado.transactionautorizationservice.domain.repository.TransactionRepository;
+import com.marcosprado.transactionautorizationservice.domain.util.MoneyConverter;
 import com.marcosprado.transactionautorizationservice.presentation.dto.*;
 import jakarta.transaction.Transactional;
-
-import java.math.BigDecimal;
 
 public abstract class BalanceOperation {
     protected AccountRepository accountRepository;
@@ -23,17 +22,13 @@ public abstract class BalanceOperation {
 
     public abstract String getOperationType();
 
-    protected boolean isValidValue(Long value) {
-        return value != null && value > 0;
-    }
-
     protected TransactionResponse generateTransactionResponse(Transaction transaction, Account account) {
         return new TransactionResponse(
                 new TransactionDTO(
                         transaction.getId(),
                         transaction.getType(),
                         new MoneyDTO(
-                                new BigDecimal(transaction.getAmountCents()),
+                                MoneyConverter.centsToDecimal(transaction.getAmountCents()),
                                 transaction.getCurrency()
                         ),
                         transaction.getStatus(),
@@ -42,9 +37,7 @@ public abstract class BalanceOperation {
                 new AccountBalanceDTO(
                         account.getId(),
                         new AccountBalanceDTO.BalanceDTO(
-                                new BigDecimal(
-                                        account.getAmountCents()
-                                ),
+                                account.getBalance(),
                                 account.getCurrency()
                         )
                 )
