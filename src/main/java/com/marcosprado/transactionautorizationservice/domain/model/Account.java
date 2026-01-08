@@ -60,4 +60,24 @@ public class Account {
     public void updateStatus(AccountStatus status) {
         this.status = status;
     }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public void setAmountCents(Long amountCents) {
+        this.amountCents = amountCents;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 }
