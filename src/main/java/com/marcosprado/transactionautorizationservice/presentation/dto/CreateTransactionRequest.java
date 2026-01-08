@@ -15,7 +15,7 @@ public record CreateTransactionRequest(
 
         @NotNull(message = "Amount is required")
         @Positive(message = "Amount must be positive")
-        Long value,
+        String value,
 
         @NotNull(message = "Currency is required")
         String currency

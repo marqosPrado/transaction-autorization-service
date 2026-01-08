@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 @RestController
 @RequestMapping("/api/v1/transactions")
 public class TransactionController {
@@ -35,11 +32,6 @@ public class TransactionController {
 
         TransactionResponse result = processBalanceOperationUseCase.execute(request);
 
-        return null;
-    }
-
-    private BigDecimal centsToDecimal(Long cents) {
-        return BigDecimal.valueOf(cents)
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        return ResponseEntity.status(201).body(result);
     }
 }
