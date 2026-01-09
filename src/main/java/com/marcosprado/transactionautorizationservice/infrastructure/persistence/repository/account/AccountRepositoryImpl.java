@@ -1,4 +1,4 @@
-package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository;
+package com.marcosprado.transactionautorizationservice.infrastructure.persistence.repository.account;
 
 import com.marcosprado.transactionautorizationservice.domain.model.Account;
 import com.marcosprado.transactionautorizationservice.domain.repository.AccountRepository;
@@ -29,8 +29,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public void save(Account account) {
         AccountEntity entity = mapper.toEntity(account);
-        AccountEntity saved = jpaRepository.save(entity);
-        mapper.toDomain(saved);
+        jpaRepository.save(entity);
     }
 
     @Override

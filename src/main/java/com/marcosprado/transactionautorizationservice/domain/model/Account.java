@@ -1,5 +1,8 @@
 package com.marcosprado.transactionautorizationservice.domain.model;
 
+import com.marcosprado.transactionautorizationservice.domain.util.MoneyConverter;
+
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,11 +56,30 @@ public class Account {
         return createdAt;
     }
 
-    public void updateAmount(Long amountCents) {
-        this.amountCents = amountCents;
+    public void credit(BigDecimal amount) {
+        validateAmount(amount);
+        this.amountCents += MoneyConverter.decimalToCents(amount);
     }
 
-    public void updateStatus(AccountStatus status) {
-        this.status = status;
+    public void debit(BigDecimal amount) {
+        validateAmount(amount);
+        Long amountToDeductCents = MoneyConverter.decimalToCents(amount);
+
+        if (this.amountCents < amountToDeductCents) {
+            throw new IllegalArgumentException("Insufficient balance");
+        }
+
+        this.amountCents -= amountToDeductCents;
+    }
+
+
+    public BigDecimal getBalance() {
+        return MoneyConverter.centsToDecimal(this.amountCents);
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
     }
 }
