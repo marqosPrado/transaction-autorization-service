@@ -13,25 +13,37 @@ public class Account {
     private UUID ownerId;
     private AccountStatus status;
     private Long amountCents;
-    private String currency;
+    private Currency currency;
     private Instant createdAt;
+    private Long version;
 
     public Account(UUID id, UUID ownerId, AccountStatus status, Instant createdAt) {
         this.id = id;
         this.ownerId = ownerId;
         this.status = status;
         this.amountCents = 0L;
-        this.currency = "BRL";
+        this.currency = Currency.BRL;
         this.createdAt = createdAt;
     }
 
-    public Account(UUID id, UUID ownerId, AccountStatus status, Long amountCents, String currency, Instant createdAt) {
+    public Account(UUID id, UUID ownerId, AccountStatus status, Long amountCents, Currency currency, Instant createdAt) {
         this.id = id;
         this.ownerId = ownerId;
         this.status = status;
         this.amountCents = amountCents;
         this.currency = currency;
         this.createdAt = createdAt;
+        this.version = null;
+    }
+
+    public Account(UUID id, UUID ownerId, AccountStatus status, Long amountCents, Currency currency, Instant createdAt, Long version) {
+        this.id = id;
+        this.ownerId = ownerId;
+        this.status = status;
+        this.amountCents = amountCents;
+        this.currency = currency;
+        this.createdAt = createdAt;
+        this.version = version;
     }
 
     public UUID getId() {
@@ -50,12 +62,20 @@ public class Account {
         return amountCents;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
+    }
+
+    public String getCurrencyCode() {
+        return currency.name();
     }
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 
     public void credit(BigDecimal amount) {
