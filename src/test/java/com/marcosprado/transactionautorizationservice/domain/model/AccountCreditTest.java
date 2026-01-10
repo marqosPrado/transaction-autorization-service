@@ -1,5 +1,6 @@
 package com.marcosprado.transactionautorizationservice.domain.model;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.InvalidOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -133,7 +134,7 @@ class AccountCreditTest {
         );
 
         assertThatThrownBy(() -> account.credit(null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
@@ -153,7 +154,7 @@ class AccountCreditTest {
         BigDecimal creditAmount = BigDecimal.ZERO;
 
         assertThatThrownBy(() -> account.credit(creditAmount))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
@@ -173,7 +174,7 @@ class AccountCreditTest {
         BigDecimal creditAmount = new BigDecimal("-50.00");
 
         assertThatThrownBy(() -> account.credit(creditAmount))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);

@@ -1,5 +1,6 @@
 package com.marcosprado.transactionautorizationservice.domain.factory;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.OperationTypeNotFoundException;
 import com.marcosprado.transactionautorizationservice.domain.strategy.BalanceOperation;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ public class BalanceOperationFactory {
     public BalanceOperation getStrategy(String operationType) {
         BalanceOperation strategy = strategies.get(operationType.toUpperCase());
         if (strategy == null) {
-            throw new IllegalArgumentException("Invalid operation type: " + operationType);
+            throw new OperationTypeNotFoundException(operationType);
         }
 
         return strategy;
