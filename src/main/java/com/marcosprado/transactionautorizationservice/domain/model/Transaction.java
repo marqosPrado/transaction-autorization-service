@@ -3,7 +3,7 @@ package com.marcosprado.transactionautorizationservice.domain.model;
 import com.marcosprado.transactionautorizationservice.domain.util.MoneyConverter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public class Transaction {
@@ -11,8 +11,8 @@ public class Transaction {
     private UUID accountId;
     private TransactionOperationType type;
     private Long amountCents;
-    private String currency;
-    private LocalDateTime createdAt;
+    private Currency currency;
+    private Instant createdAt;
     private TransactionStatus status;
 
     public Transaction(
@@ -20,8 +20,8 @@ public class Transaction {
             UUID accountId,
             TransactionOperationType type,
             Long amountCents,
-            String currency,
-            LocalDateTime createdAt,
+            Currency currency,
+            Instant createdAt,
             TransactionStatus status
     ) {
         this.id = id;
@@ -33,16 +33,16 @@ public class Transaction {
         this.status = status;
     }
 
-    private Transaction(UUID accountId, TransactionOperationType type, Long amountCents, String currency) {
+    private Transaction(UUID accountId, TransactionOperationType type, Long amountCents, Currency currency) {
         this.accountId = accountId;
         this.type = type;
         this.amountCents = amountCents;
         this.currency = currency;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
         this.status = TransactionStatus.PROCESS;
     }
 
-    public static Transaction create(UUID accountId, TransactionOperationType type, BigDecimal amount, String currency) {
+    public static Transaction create(UUID accountId, TransactionOperationType type, BigDecimal amount, Currency currency) {
         Long amountCents = MoneyConverter.decimalToCents(amount);
         return new Transaction(accountId, type, amountCents, currency);
     }
@@ -63,11 +63,15 @@ public class Transaction {
         return amountCents;
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public String getCurrencyCode() {
+        return currency.name();
+    }
+
+    public Instant getCreatedAt() {
         return createdAt;
     }
 

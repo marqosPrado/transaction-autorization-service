@@ -24,6 +24,8 @@ public class ProcessCreditOperation extends BalanceOperation {
     public TransactionResponse execute(Account account, CreateTransactionRequest input) {
         BigDecimal amount = new BigDecimal(input.value());
 
+        validateCurrency(input.currency(), account.getCurrency());
+
         account.credit(amount);
 
         Transaction transaction = Transaction.create(

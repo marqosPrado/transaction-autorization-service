@@ -1,6 +1,8 @@
 package com.marcosprado.transactionautorizationservice.domain.strategy;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.CurrencyMismatchException;
 import com.marcosprado.transactionautorizationservice.domain.model.Account;
+import com.marcosprado.transactionautorizationservice.domain.model.Currency;
 import com.marcosprado.transactionautorizationservice.domain.model.Transaction;
 import com.marcosprado.transactionautorizationservice.domain.repository.AccountRepository;
 import com.marcosprado.transactionautorizationservice.domain.repository.TransactionRepository;
@@ -29,7 +31,7 @@ public abstract class BalanceOperation {
                         transaction.getType(),
                         new MoneyDTO(
                                 MoneyConverter.centsToDecimal(transaction.getAmountCents()),
-                                transaction.getCurrency()
+                                transaction.getCurrencyCode()
                         ),
                         transaction.getStatus(),
                         transaction.getCreatedAt()
@@ -38,9 +40,20 @@ public abstract class BalanceOperation {
                         account.getId(),
                         new AccountBalanceDTO.BalanceDTO(
                                 account.getBalance(),
-                                account.getCurrency()
+                                account.getCurrencyCode()
                         )
                 )
         );
+    }
+
+    protected void validateCurrency(String requestCurrency, Currency accountCurrency) {
+        Currency requestCurrencyEnum = Currency.fromCode(requestCurrency);
+
+        if (requestCurrencyEnum != accountCurrency) {
+            throw new CurrencyMismatchException(
+                    requestCurrency,
+                    accountCurrency.name()
+            );
+        }
     }
 }
