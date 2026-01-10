@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "4bad4129-aae1-4f41-9192-f20eb6ab8123",
+		"name": "TRANSACTION SERVICE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40498346"
+	},
+	"item": [
+		{
+			"name": "DÉBITO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\": \"42aeb186-5995-4c57-a290-8a957e5fa4bb\",\r\n    \"operationType\": \"DEBIT\",\r\n    \"value\": \"19.00\",\r\n    \"currency\": \"BRL\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRÉDITO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountId\": \"42aeb186-5995-4c57-a290-8a957e5fa4bb\",\r\n    \"operationType\": \"CREDIT\",\r\n    \"value\": \"19.00\",\r\n    \"currency\": \"BRL\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
