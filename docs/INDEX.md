@@ -10,10 +10,6 @@ Este diretório contém toda a documentação técnica do Transaction Authorizat
 
 - **[README Principal](../README.md)** - Visão geral do projeto, instalação e uso
 
-## Decisões Arquiteturais
-
-Os ADRs documentam decisões importantes tomadas durante o desenvolvimento do projeto, incluindo contexto, alternativas consideradas, justificativa e consequências.
-
 ### Strategy Pattern para Operações
 **[Ver](adr/patterns.md)**
 
@@ -27,7 +23,6 @@ Os ADRs documentam decisões importantes tomadas durante o desenvolvimento do pr
 **Trade-offs:**
 - ✅ Código limpo e extensível
 - ❌ Mais classes (uma por tipo de operação)
-
 ---
 
 ## API
@@ -40,10 +35,8 @@ Os ADRs documentam decisões importantes tomadas durante o desenvolvimento do pr
 - Coleção Postman (JSON)
 - Casos de uso (crédito, débito, saldo insuficiente)
 - Cenários de erro (404, 400, validação)
-- Health check endpoint
-- Load testing com Apache Bench
 
-**[Importar Postman Collection](../postman_collection.json)**
+**[Importar Postman Collection](/docs/api/postman_collection.json)**
 
 ---
 
@@ -55,7 +48,6 @@ docs/
 ├── architecture/
 │   └── ARCHITECTURE.md  
 ├── adr/
-│   ├── ADR-001-database-choice.md    # Decisão: PostgreSQL
 │   └── patterns.md
 └── api/
     └── API_COLLECTION.md             # Exemplos de API

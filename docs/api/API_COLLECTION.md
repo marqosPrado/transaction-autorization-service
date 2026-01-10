@@ -76,7 +76,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Accept: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "DEBIT",
+    "operationType": "DEBIT",
     "amount": 50.00,
     "currency": "BRL"
   }' \
@@ -120,7 +120,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Accept: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "DEBIT",
+    "operationType": "DEBIT",
     "amount": 200.00,
     "currency": "BRL"
   }' \
@@ -165,8 +165,8 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -d '{
-    "accountId": "00000000-0000-0000-0000-000000000000",
-    "type": "CREDIT",
+    "accountId": "9f2c4c7e-6b3a-4d6b-9a3e-8f1d7c2b5a41",
+    "operationType": "CREDIT",
     "amount": 50.00,
     "currency": "BRL"
   }' \
@@ -178,10 +178,11 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-09T15:33:00-03:00",
+  "timestamp": "2026-01-10T02:06:02.390352970Z",
   "status": 404,
   "error": "Not Found",
-  "message": "Account not found with id: 00000000-0000-0000-0000-000000000000",
+  "message": "Account with ID '9f2c4c7e-6b3a-4d6b-9a3e-8f1d7c2b5a41' not found",
+  "errorCode": "ACCOUNT_NOT_FOUND",
   "path": "/api/v1/transactions"
 }
 ```
@@ -198,7 +199,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Accept: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "CREDIT",
+    "operationType": "CREDIT",
     "amount": -100.00,
     "currency": "BRL"
   }' \
@@ -210,17 +211,19 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-09T15:34:00-03:00",
+  "timestamp": "2026-01-10T02:02:54.891646344Z",
   "status": 400,
-  "error": "Bad Request",
-  "message": "Validation failed",
-  "errors": [
+  "error": "Validation Failed",
+  "message": "Validation failed for one or more fields",
+  "errorCode": "VALIDATION_ERROR",
+  "path": "/api/v1/transactions",
+  "fieldErrors": [
     {
-      "field": "amount",
-      "message": "must be greater than 0"
+      "field": "value",
+      "rejectedValue": "0.00",
+      "message": "Amount must be positive"
     }
-  ],
-  "path": "/api/v1/transactions"
+  ]
 }
 ```
 
@@ -247,17 +250,19 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-09T15:35:00-03:00",
+  "timestamp": "2026-01-10T02:04:01.304649367Z",
   "status": 400,
-  "error": "Bad Request",
-  "message": "Validation failed",
-  "errors": [
+  "error": "Validation Failed",
+  "message": "Validation failed for one or more fields",
+  "errorCode": "VALIDATION_ERROR",
+  "path": "/api/v1/transactions",
+  "fieldErrors": [
     {
-      "field": "type",
-      "message": "must not be null"
+      "field": "operationType",
+      "rejectedValue": null,
+      "message": "Operation type is required"
     }
-  ],
-  "path": "/api/v1/transactions"
+  ]
 }
 ```
 
@@ -273,7 +278,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Accept: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "CREDIT",
+    "operationType": "CREDIT",
     "amount": 100.00,
     "currency": "INVALID"
   }' \
@@ -292,72 +297,6 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   "path": "/api/v1/transactions"
 }
 ```
-
----
-
-### 8. Múltiplas Transações Sequenciais
-
-Script para executar múltiplas transações em sequência.
-
-```bash
-#!/bin/bash
-
-ACCOUNT_ID="5b19c8b6-0cc4-4c72-a989-0c2ee15fa975"
-BASE_URL="http://localhost:8080/api/v1/transactions"
-
-echo "=== Crédito inicial: R$ 1000.00 ==="
-curl -X POST $BASE_URL \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\":\"$ACCOUNT_ID\",\"type\":\"CREDIT\",\"amount\":1000.00,\"currency\":\"BRL\"}" \
-  -s | jq '.account.balance'
-
-echo -e "\n=== Débito: R$ 250.00 ==="
-curl -X POST $BASE_URL \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\":\"$ACCOUNT_ID\",\"type\":\"DEBIT\",\"amount\":250.00,\"currency\":\"BRL\"}" \
-  -s | jq '.account.balance'
-
-echo -e "\n=== Débito: R$ 300.00 ==="
-curl -X POST $BASE_URL \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\":\"$ACCOUNT_ID\",\"type\":\"DEBIT\",\"amount\":300.00,\"currency\":\"BRL\"}" \
-  -s | jq '.account.balance'
-
-echo -e "\n=== Crédito: R$ 50.00 ==="
-curl -X POST $BASE_URL \
-  -H "Content-Type: application/json" \
-  -d "{\"accountId\":\"$ACCOUNT_ID\",\"type\":\"CREDIT\",\"amount\":50.00,\"currency\":\"BRL\"}" \
-  -s | jq '.account.balance'
-
-echo -e "\n=== Saldo final esperado: R$ 500.00 ==="
-```
-
-**Output esperado:**
-
-```json
-{
-  "amount": 1000.00,
-  "currency": "BRL"
-}
-
-{
-  "amount": 750.00,
-  "currency": "BRL"
-}
-
-{
-  "amount": 450.00,
-  "currency": "BRL"
-}
-
-{
-  "amount": 500.00,
-  "currency": "BRL"
-}
-
-=== Saldo final esperado: R$ 500.00 ===
-```
-
 ---
 
 ## Postman Collection
@@ -374,256 +313,68 @@ echo -e "\n=== Saldo final esperado: R$ 500.00 ==="
 ```json
 {
   "info": {
-    "name": "Transaction Authorization Service API",
-    "description": "Collection for testing transaction authorization endpoints",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "_postman_id": "4bad4129-aae1-4f41-9192-f20eb6ab8123",
+    "name": "TRANSACTION SERVICE",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40498346"
   },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8080",
-      "type": "string"
-    },
-    {
-      "key": "accountId",
-      "value": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-      "type": "string"
-    }
-  ],
   "item": [
     {
-      "name": "Health Check",
+      "name": "DÉBITO",
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"accountId\": \"42aeb186-5995-4c57-a290-8a957e5fa4bb\",\r\n    \"operationType\": \"DEBIT\",\r\n    \"value\": \"19.00\",\r\n    \"currency\": \"BRL\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": "{{baseUrl}}/actuator/health",
-          "host": ["{{baseUrl}}"],
-          "path": ["actuator", "health"]
+          "raw": "http://localhost:8080/api/v1/transactions",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "transactions"
+          ]
         }
       },
       "response": []
     },
     {
-      "name": "Create Credit Transaction - Success",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 201\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});",
-              "",
-              "pm.test(\"Transaction status is SUCCEEDED\", function () {",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.transaction.status).to.eql(\"SUCCEEDED\");",
-              "});",
-              "",
-              "pm.test(\"Transaction type is CREDIT\", function () {",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.transaction.type).to.eql(\"CREDIT\");",
-              "});"
-            ]
-          }
-        }
-      ],
+      "name": "CRÉDITO",
       "request": {
         "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
+        "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"type\": \"CREDIT\",\n  \"amount\": 150.00,\n  \"currency\": \"BRL\"\n}"
+          "raw": "{\r\n    \"accountId\": \"42aeb186-5995-4c57-a290-8a957e5fa4bb\",\r\n    \"operationType\": \"CREDIT\",\r\n    \"value\": \"19.00\",\r\n    \"currency\": \"BRL\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
         "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Debit Transaction - Success",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 201\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});",
-              "",
-              "pm.test(\"Transaction status is SUCCEEDED\", function () {",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.transaction.status).to.eql(\"SUCCEEDED\");",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"type\": \"DEBIT\",\n  \"amount\": 50.00,\n  \"currency\": \"BRL\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Debit Transaction - Insufficient Balance",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 201\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});",
-              "",
-              "pm.test(\"Transaction status is FAILED\", function () {",
-              "    var jsonData = pm.response.json();",
-              "    pm.expect(jsonData.transaction.status).to.eql(\"FAILED\");",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"type\": \"DEBIT\",\n  \"amount\": 10000.00,\n  \"currency\": \"BRL\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Transaction - Account Not Found",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 404\", function () {",
-              "    pm.response.to.have.status(404);",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"00000000-0000-0000-0000-000000000000\",\n  \"type\": \"CREDIT\",\n  \"amount\": 100.00,\n  \"currency\": \"BRL\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Transaction - Negative Amount",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 400\", function () {",
-              "    pm.response.to.have.status(400);",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"type\": \"CREDIT\",\n  \"amount\": -100.00,\n  \"currency\": \"BRL\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Create Transaction - Invalid Currency",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 400\", function () {",
-              "    pm.response.to.have.status(400);",
-              "});"
-            ]
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"type\": \"CREDIT\",\n  \"amount\": 100.00,\n  \"currency\": \"INVALID\"\n}"
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/transactions",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "v1", "transactions"]
+          "raw": "http://localhost:8080/api/v1/transactions",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "transactions"
+          ]
         }
       },
       "response": []
