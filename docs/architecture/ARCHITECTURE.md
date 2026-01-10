@@ -2,11 +2,11 @@
 
 ## Visão Geral
 
-O Transaction Authorization Service é uma aplicação de missão crítica projetada para processar transações financeiras com alta volumetria, garantindo consistência, disponibilidade e resiliência. A arquitetura segue os princípios de **Clean Architecture** para maximizar testabilidade, manutenibilidade e independência de frameworks.
+O Transaction Authorization Service é uma aplicação de missão crítica projetada para processar transações financeiras com alta volumetria, garantindo consistência, disponibilidade e resiliência. A arquitetura segue alguns princípios de **Clean Architecture** para maximizar testabilidade, manutenibilidade e independência de frameworks.
 
 ## Princípios Arquiteturais
 
-### 1. Separation of Concerns (Separação de Responsabilidades)
+### 1. Separação de Responsabilidades
 
 Cada camada tem responsabilidades bem definidas:
 - **Presentation**: Exposição de APIs e formatação de dados
@@ -14,7 +14,7 @@ Cada camada tem responsabilidades bem definidas:
 - **Domain**: Regras de negócio e lógica central
 - **Infrastructure**: Detalhes técnicos (persistência, mensageria)
 
-### 2. Dependency Rule (Regra de Dependência)
+### 2. Regra de Dependência
 
 As dependências fluem sempre para dentro, em direção ao domínio:
 ```
@@ -24,7 +24,7 @@ Presentation → Application → Domain
 
 O domínio **não conhece** as camadas externas, garantindo isolamento e testabilidade.
 
-### 3. Dependency Inversion (Inversão de Dependência)
+### 3. Inversão de Dependência
 
 Interfaces são definidas nas camadas internas e implementadas nas externas:
 - `AccountRepository` (interface no Domain) → `AccountRepositoryImpl` (implementação na Infrastructure)
