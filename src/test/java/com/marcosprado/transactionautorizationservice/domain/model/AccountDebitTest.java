@@ -1,5 +1,7 @@
 package com.marcosprado.transactionautorizationservice.domain.model;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.InsufficientBalanceException;
+import com.marcosprado.transactionautorizationservice.domain.exception.InvalidOperationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -134,8 +136,8 @@ class AccountDebitTest {
         BigDecimal debitAmount = new BigDecimal("150.00");
 
         assertThatThrownBy(() -> account.debit(debitAmount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Insufficient balance");
+                .isInstanceOf(InsufficientBalanceException.class)
+                .hasMessageContaining("Insufficient balance");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
     }
@@ -154,8 +156,8 @@ class AccountDebitTest {
         BigDecimal debitAmount = new BigDecimal("100.01");
 
         assertThatThrownBy(() -> account.debit(debitAmount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Insufficient balance");
+                .isInstanceOf(InsufficientBalanceException.class)
+                .hasMessageContaining("Insufficient balance");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
     }
@@ -174,8 +176,8 @@ class AccountDebitTest {
         BigDecimal debitAmount = new BigDecimal("50.00");
 
         assertThatThrownBy(() -> account.debit(debitAmount))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Insufficient balance");
+                .isInstanceOf(InsufficientBalanceException.class)
+                .hasMessageContaining("Insufficient balance");
 
         assertThat(account.getAmountCents()).isEqualTo(0L);
     }
@@ -193,7 +195,7 @@ class AccountDebitTest {
         );
 
         assertThatThrownBy(() -> account.debit(null))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
@@ -213,7 +215,7 @@ class AccountDebitTest {
         BigDecimal debitAmount = BigDecimal.ZERO;
 
         assertThatThrownBy(() -> account.debit(debitAmount))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
@@ -233,7 +235,7 @@ class AccountDebitTest {
         BigDecimal debitAmount = new BigDecimal("-50.00");
 
         assertThatThrownBy(() -> account.debit(debitAmount))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidOperationException.class)
                 .hasMessage("Amount must be positive");
 
         assertThat(account.getAmountCents()).isEqualTo(10000L);
@@ -360,8 +362,8 @@ class AccountDebitTest {
         assertThat(account.getBalance()).isEqualByComparingTo(new BigDecimal("10.00"));
 
         assertThatThrownBy(() -> account.debit(new BigDecimal("20.00")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Insufficient balance");
+                .isInstanceOf(InsufficientBalanceException.class)
+                .hasMessageContaining("Insufficient balance");
 
         assertThat(account.getAmountCents()).isEqualTo(1000L);
     }
