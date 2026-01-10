@@ -1,5 +1,6 @@
 package com.marcosprado.transactionautorizationservice.application.usecase;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.AccountNotFoundException;
 import com.marcosprado.transactionautorizationservice.domain.factory.BalanceOperationFactory;
 import com.marcosprado.transactionautorizationservice.domain.model.Account;
 import com.marcosprado.transactionautorizationservice.domain.repository.AccountRepository;
@@ -21,7 +22,7 @@ public class ProcessBalanceOperationUseCase {
 
     public TransactionResponse execute(CreateTransactionRequest input) {
         Account account = accountRepository.findById(input.accountId())
-                .orElseThrow(() -> new IllegalArgumentException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException(input.accountId()));
 
         BalanceOperation operation = balanceOperationFactory.getStrategy(input.operationType().name());
 

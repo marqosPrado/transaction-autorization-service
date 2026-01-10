@@ -1,5 +1,7 @@
 package com.marcosprado.transactionautorizationservice.domain.model;
 
+import com.marcosprado.transactionautorizationservice.domain.exception.InsufficientBalanceException;
+import com.marcosprado.transactionautorizationservice.domain.exception.InvalidOperationException;
 import com.marcosprado.transactionautorizationservice.domain.util.MoneyConverter;
 
 import java.math.BigDecimal;
@@ -66,7 +68,7 @@ public class Account {
         Long amountToDeductCents = MoneyConverter.decimalToCents(amount);
 
         if (this.amountCents < amountToDeductCents) {
-            throw new IllegalArgumentException("Insufficient balance");
+            throw new InsufficientBalanceException(getBalance(), amount);
         }
 
         this.amountCents -= amountToDeductCents;
@@ -79,7 +81,7 @@ public class Account {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Amount must be positive");
+            throw new InvalidOperationException("Amount must be positive");
         }
     }
 }
