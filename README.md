@@ -4,7 +4,6 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.9-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-blue.svg)](https://www.postgresql.org/)
 [![AWS SQS](https://img.shields.io/badge/AWS-SQS-orange.svg)](https://aws.amazon.com/sqs/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Descrição
 
@@ -42,7 +41,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico para demonstrar 
 
 ## Arquitetura
 
-O projeto foi baseado em alguns principios de **Clean Architecture**:
+O projeto foi baseado em alguns princípios de **Clean Architecture**:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -105,7 +104,7 @@ Para mais detalhes, consulte a [documentação de arquitetura](docs/architecture
 
 Antes de começar, certifique-se de ter instalado:
 
-- **Java 21** ou superior ([Download](https://adoptium.net/))
+- **Java 21** ou superior ([Download](https://openjdk.org/))
 - **Docker** e **Docker Compose** ([Download](https://www.docker.com/get-started))
 - **Maven 3.9+** (ou use o wrapper `./mvnw` incluído)
 - **AWS CLI** (opcional, para testar a fila SQS) ([Download](https://aws.amazon.com/cli/))
@@ -212,7 +211,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Content-Type: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "CREDIT",
+    "operationType": "CREDIT",
     "amount": 150.00,
     "currency": "BRL"
   }'
@@ -225,7 +224,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Content-Type: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "DEBIT",
+    "operationType": "DEBIT",
     "amount": 50.00,
     "currency": "BRL"
   }'
@@ -242,7 +241,7 @@ Cria uma nova transação de crédito ou débito.
 ```json
 {
   "accountId": "uuid",
-  "type": "CREDIT|DEBIT",
+  "operationType": "CREDIT|DEBIT",
   "amount": 100.00,
   "currency": "BRL"
 }
@@ -269,14 +268,6 @@ Cria uma nova transação de crédito ou débito.
       "currency": "BRL"
     }
   }
-}
-```
-
-**Response (400 Bad Request) - Saldo Insuficiente:**
-
-```json
-{
-  "error": "Insufficient balance for debit operation"
 }
 ```
 
