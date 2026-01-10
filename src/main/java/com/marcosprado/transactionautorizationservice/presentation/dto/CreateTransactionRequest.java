@@ -1,6 +1,7 @@
 package com.marcosprado.transactionautorizationservice.presentation.dto;
 
 import com.marcosprado.transactionautorizationservice.domain.model.TransactionOperationType;
+import com.marcosprado.transactionautorizationservice.presentation.validation.ValidCurrency;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -18,6 +19,7 @@ public record CreateTransactionRequest(
         String value,
 
         @NotNull(message = "Currency is required")
+        @ValidCurrency
         String currency
 ) {
 }

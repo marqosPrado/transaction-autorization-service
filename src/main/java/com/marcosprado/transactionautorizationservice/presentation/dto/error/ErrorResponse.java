@@ -9,17 +9,16 @@ import java.util.Map;
 public record ErrorResponse(
         Instant timestamp,
         int status,
-        String error,
         String message,
         String errorCode,
         String path,
         Map<String, Object> details
 ) {
-    public ErrorResponse(int status, String error, String message, String errorCode, String path) {
-        this(Instant.now(), status, error, message, errorCode, path, null);
+    public ErrorResponse(int status, String message, String errorCode, String path) {
+        this(Instant.now(), status, message, errorCode, path, null);
     }
 
-    public ErrorResponse(int status, String error, String message, String errorCode, String path, Map<String, Object> details) {
-        this(Instant.now(), status, error, message, errorCode, path, details);
+    public ErrorResponse(int status, String message, String errorCode, String path, Map<String, Object> details) {
+        this(Instant.now(), status, message, errorCode, path, details);
     }
 }

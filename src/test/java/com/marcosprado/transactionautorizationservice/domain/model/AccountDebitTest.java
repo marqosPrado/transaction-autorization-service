@@ -34,7 +34,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("50.00");
@@ -53,7 +53,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("100.00");
@@ -72,7 +72,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 50000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("123.45");
@@ -91,7 +91,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 1000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("0.01");
@@ -110,7 +110,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -130,7 +130,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("150.00");
@@ -150,7 +150,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("100.01");
@@ -170,7 +170,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 0L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("50.00");
@@ -190,7 +190,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -209,7 +209,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = BigDecimal.ZERO;
@@ -229,7 +229,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("-50.00");
@@ -249,7 +249,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("50.555");
@@ -269,7 +269,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 createdAt
         );
         BigDecimal debitAmount = new BigDecimal("50.00");
@@ -279,7 +279,7 @@ class AccountDebitTest {
         assertThat(account.getId()).isEqualTo(accountId);
         assertThat(account.getOwnerId()).isEqualTo(ownerId);
         assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
-        assertThat(account.getCurrency()).isEqualTo("BRL");
+        assertThat(account.getCurrency()).isEqualTo(Currency.BRL);
         assertThat(account.getCreatedAt()).isEqualTo(createdAt);
     }
 
@@ -291,7 +291,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -312,7 +312,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 100000000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal debitAmount = new BigDecimal("999999.99");
@@ -331,7 +331,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 100L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -351,7 +351,7 @@ class AccountDebitTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 

@@ -33,7 +33,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
     "type": "CREDIT",
-    "amount": 150.00,
+    "value": "150.00",
     "currency": "BRL"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
@@ -77,7 +77,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
     "operationType": "DEBIT",
-    "amount": 50.00,
+    "value": "50.00",
     "currency": "BRL"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
@@ -121,38 +121,28 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
     "operationType": "DEBIT",
-    "amount": 200.00,
+    "value": "8000.00",
     "currency": "BRL"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
   -s | jq .
 ```
 
-**Response (201 Created):**
+**Response (422):**
 
 ```json
 {
-  "transaction": {
-    "id": "af9bf00a-d376-6ad7-bg5g-775957ee6765",
-    "type": "DEBIT",
-    "amount": {
-      "value": 200.00,
-      "currency": "BRL"
-    },
-    "status": "FAILED",
-    "timestamp": "2026-01-09T15:32:00-03:00"
-  },
-  "account": {
-    "id": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "balance": {
-      "amount": 100.00,
-      "currency": "BRL"
-    }
+  "timestamp": "2026-01-10T18:23:01.713082460Z",
+  "status": 422,
+  "message": "Insufficient balance. Current: 500.00, Requested: 8000.00",
+  "errorCode": "INSUFFICIENT_BALANCE",
+  "path": "/api/v1/transactions",
+  "details": {
+    "currentBalance": 500.00,
+    "requestedAmount": 8000.00
   }
 }
 ```
-
-**Nota:** O status HTTP é 201 (transação foi criada), mas `transaction.status` é `FAILED` indicando que a operação não foi executada devido a saldo insuficiente.
 
 ---
 
@@ -167,7 +157,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "9f2c4c7e-6b3a-4d6b-9a3e-8f1d7c2b5a41",
     "operationType": "CREDIT",
-    "amount": 50.00,
+    "value": "50.00",
     "currency": "BRL"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
@@ -178,9 +168,8 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-10T02:06:02.390352970Z",
+  "timestamp": "2026-01-10T18:24:28.348905467Z",
   "status": 404,
-  "error": "Not Found",
   "message": "Account with ID '9f2c4c7e-6b3a-4d6b-9a3e-8f1d7c2b5a41' not found",
   "errorCode": "ACCOUNT_NOT_FOUND",
   "path": "/api/v1/transactions"
@@ -200,7 +189,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
     "operationType": "CREDIT",
-    "amount": -100.00,
+    "value": -8000.00,
     "currency": "BRL"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
@@ -211,16 +200,15 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-10T02:02:54.891646344Z",
+  "timestamp": "2026-01-10T18:25:01.029199037Z",
   "status": 400,
-  "error": "Validation Failed",
   "message": "Validation failed for one or more fields",
   "errorCode": "VALIDATION_ERROR",
   "path": "/api/v1/transactions",
   "fieldErrors": [
     {
       "field": "value",
-      "rejectedValue": "0.00",
+      "rejectedValue": "-8000.00",
       "message": "Amount must be positive"
     }
   ]
@@ -250,9 +238,8 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-10T02:04:01.304649367Z",
+  "timestamp": "2026-01-10T18:26:07.299998237Z",
   "status": 400,
-  "error": "Validation Failed",
   "message": "Validation failed for one or more fields",
   "errorCode": "VALIDATION_ERROR",
   "path": "/api/v1/transactions",
@@ -268,9 +255,9 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ---
 
-### 7. Validação - Moeda Inválida
+### 7. Validação - Moeda Não Suportada
 
-Tenta criar transação com código de moeda inválido.
+Tenta criar transação com código de moeda não suportado.
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/transactions \
@@ -279,8 +266,8 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
     "operationType": "CREDIT",
-    "amount": 100.00,
-    "currency": "INVALID"
+    "value": "100.00",
+    "currency": "USD"
   }' \
   -w "\nHTTP Status: %{http_code}\n" \
   -s | jq .
@@ -290,13 +277,62 @@ curl -X POST http://localhost:8080/api/v1/transactions \
 
 ```json
 {
-  "timestamp": "2026-01-09T15:36:00-03:00",
+  "timestamp": "2026-01-10T18:01:50.581211527Z",
   "status": 400,
-  "error": "Bad Request",
-  "message": "Invalid currency code: INVALID",
-  "path": "/api/v1/transactions"
+  "message": "Validation failed for one or more fields",
+  "errorCode": "VALIDATION_ERROR",
+  "path": "/api/v1/transactions",
+  "fieldErrors": [
+    {
+      "field": "currency",
+      "rejectedValue": "USD",
+      "message": "Currency not supported"
+    }
+  ]
 }
 ```
+
+**Moedas suportadas:**
+- `BRL` - Real
+
+---
+
+### 8. Validação - Incompatibilidade de Moeda
+
+Tenta criar transação com moeda diferente da moeda da conta.
+
+```bash
+curl -X POST http://localhost:8080/api/v1/transactions \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
+    "operationType": "DEBIT",
+    "value": "50.00",
+    "currency": "EUR"
+  }' \
+  -w "\nHTTP Status: %{http_code}\n" \
+  -s | jq .
+```
+
+**Response (422 Unprocessable Entity):**
+
+```json
+{
+  "timestamp": "2026-01-10T18:05:23.123456789Z",
+  "status": 422,
+  "message": "Currency error. Request: EUR, Account: BRL",
+  "errorCode": "CURRENCY_MISMATCH",
+  "path": "/api/v1/transactions",
+  "details": {
+    "requestCurrency": "EUR",
+    "accountCurrency": "BRL"
+  }
+}
+```
+
+**Nota:** Este erro ocorre quando a moeda informada na requisição é válida mas não corresponde à moeda configurada para a conta.
+
 ---
 
 ## Postman Collection
@@ -382,5 +418,4 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   ]
 }
 ```
-
 ---

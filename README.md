@@ -34,6 +34,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico para demonstrar 
 - **Criação de Contas**: Consumo assíncrono de mensagens do AWS SQS para criação de novas contas bancárias
 - **Autorização de Transações**: Processamento de operações de crédito e débito via API REST
 - **Validação de Saldo**: Rejeição automática de débitos que resultariam em saldo negativo
+- **Validação de Moeda**: Suporte apenas para BRL com arquitetura extensível para múltiplas moedas
 - **Precisão Monetária**: Armazenamento de valores em centavos para evitar problemas de arredondamento
 - **Idempotência**: Prevenção de duplicação de contas na criação
 - **Transações Atômicas**: Garantia de consistência através de transações de banco de dados
@@ -242,10 +243,16 @@ Cria uma nova transação de crédito ou débito.
 {
   "accountId": "uuid",
   "operationType": "CREDIT|DEBIT",
-  "amount": 100.00,
+  "value": "100.00",
   "currency": "BRL"
 }
 ```
+
+**Validações:**
+- `accountId`: Obrigatório, deve existir no sistema
+- `operationType`: Obrigatório, deve ser `CREDIT` ou `DEBIT`
+- `value`: Obrigatório, deve ser positivo
+- `currency`: Obrigatório, deve ser `BRL` (moedas suportadas) e corresponder à moeda da conta
 
 **Response (201 Created):**
 
@@ -271,7 +278,16 @@ Cria uma nova transação de crédito ou débito.
 }
 ```
 
-Para mais exemplos, consulte a [coleção de APIs](docs/api/API_COLLECTION.md).
+**Possíveis Erros:**
+
+| Status | Código de Erro | Descrição |
+|--------|----------------|-----------|
+| 400 | `VALIDATION_ERROR` | Moeda não suportada ou campo inválido |
+| 404 | `ACCOUNT_NOT_FOUND` | Conta não encontrada |
+| 422 | `CURRENCY_MISMATCH` | Moeda da transação diferente da moeda da conta |
+| 422 | `INSUFFICIENT_BALANCE` | Saldo insuficiente para débito |
+
+Para mais exemplos e casos de erro, consulte a [coleção de APIs](docs/api/API_COLLECTION.md).
 
 ## Testes
 

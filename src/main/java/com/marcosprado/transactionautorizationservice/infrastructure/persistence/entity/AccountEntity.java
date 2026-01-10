@@ -30,6 +30,10 @@ public class AccountEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     public AccountEntity() {}
 
     public AccountEntity(UUID id, UUID ownerId, AccountStatus status, Long amountCents, String currency, Instant createdAt) {
@@ -87,5 +91,13 @@ public class AccountEntity {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

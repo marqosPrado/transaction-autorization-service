@@ -3,7 +3,7 @@ package com.marcosprado.transactionautorizationservice.infrastructure.persistenc
 import com.marcosprado.transactionautorizationservice.domain.model.TransactionOperationType;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity(name = "transactions")
@@ -28,7 +28,7 @@ public class TransactionEntity {
     private String currency;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(name = "status", nullable = false, length = 10)
     private String status;
@@ -38,7 +38,7 @@ public class TransactionEntity {
             TransactionOperationType type,
             Long amountCents,
             String currency,
-            LocalDateTime createdAt,
+            Instant createdAt,
             String status
     ) {
         this.account = account;
@@ -87,11 +87,11 @@ public class TransactionEntity {
         this.currency = currency;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 

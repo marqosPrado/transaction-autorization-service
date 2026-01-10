@@ -33,7 +33,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("50.00");
@@ -52,7 +52,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 0L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("100.00");
@@ -71,7 +71,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 50000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("123.45");
@@ -90,7 +90,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 1000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("0.01");
@@ -109,7 +109,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -129,7 +129,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 
@@ -148,7 +148,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = BigDecimal.ZERO;
@@ -168,7 +168,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("-50.00");
@@ -188,7 +188,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 100000L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
         BigDecimal creditAmount = new BigDecimal("999999.99");
@@ -208,7 +208,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 10000L,
-                "BRL",
+                Currency.BRL,
                 createdAt
         );
         BigDecimal creditAmount = new BigDecimal("50.00");
@@ -218,7 +218,7 @@ class AccountCreditTest {
         assertThat(account.getId()).isEqualTo(accountId);
         assertThat(account.getOwnerId()).isEqualTo(ownerId);
         assertThat(account.getStatus()).isEqualTo(AccountStatus.ENABLED);
-        assertThat(account.getCurrency()).isEqualTo("BRL");
+        assertThat(account.getCurrency()).isEqualTo(Currency.BRL);
         assertThat(account.getCreatedAt()).isEqualTo(createdAt);
     }
 
@@ -230,7 +230,7 @@ class AccountCreditTest {
                 ownerId,
                 AccountStatus.ENABLED,
                 0L,
-                "BRL",
+                Currency.BRL,
                 Instant.now()
         );
 

@@ -1,6 +1,7 @@
 package com.marcosprado.transactionautorizationservice.infrastructure.persistence.mapper;
 
 import com.marcosprado.transactionautorizationservice.domain.model.Account;
+import com.marcosprado.transactionautorizationservice.domain.model.Currency;
 import com.marcosprado.transactionautorizationservice.domain.model.Transaction;
 import com.marcosprado.transactionautorizationservice.domain.model.TransactionStatus;
 import com.marcosprado.transactionautorizationservice.infrastructure.persistence.entity.AccountEntity;
@@ -22,7 +23,7 @@ public class TransactionEntityMapper {
                 accountEntity,
                 transaction.getType(),
                 transaction.getAmountCents(),
-                transaction.getCurrency(),
+                transaction.getCurrency().name(),
                 transaction.getCreatedAt(),
                 transaction.getStatus().name()
         );
@@ -34,7 +35,7 @@ public class TransactionEntityMapper {
                 entity.getAccount().getId(),
                 entity.getType(),
                 entity.getAmountCents(),
-                entity.getCurrency(),
+                Currency.fromCode(entity.getCurrency()),
                 entity.getCreatedAt(),
                 TransactionStatus.valueOf(entity.getStatus())
         );

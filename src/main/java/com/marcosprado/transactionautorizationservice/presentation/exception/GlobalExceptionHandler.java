@@ -1,10 +1,6 @@
 package com.marcosprado.transactionautorizationservice.presentation.exception;
 
-import com.marcosprado.transactionautorizationservice.domain.exception.AccountNotFoundException;
-import com.marcosprado.transactionautorizationservice.domain.exception.DomainException;
-import com.marcosprado.transactionautorizationservice.domain.exception.InsufficientBalanceException;
-import com.marcosprado.transactionautorizationservice.domain.exception.InvalidOperationException;
-import com.marcosprado.transactionautorizationservice.domain.exception.OperationTypeNotFoundException;
+import com.marcosprado.transactionautorizationservice.domain.exception.*;
 import com.marcosprado.transactionautorizationservice.presentation.dto.error.ErrorResponse;
 import com.marcosprado.transactionautorizationservice.presentation.dto.error.FieldError;
 import com.marcosprado.transactionautorizationservice.presentation.dto.error.ValidationErrorResponse;
@@ -16,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,7 +38,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
                 ex.getMessage(),
                 ex.getErrorCode(),
                 request.getRequestURI()
@@ -64,7 +60,29 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                "Unprocessable Entity",
+                ex.getMessage(),
+                ex.getErrorCode(),
+                request.getRequestURI(),
+                details
+        );
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse);
+    }
+
+    @ExceptionHandler(CurrencyMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleCurrencyMismatchException(
+            CurrencyMismatchException ex,
+            HttpServletRequest request) {
+
+        log.warn("Currency mismatch: request={}, account={}",
+                ex.getRequestCurrency(), ex.getAccountCurrency());
+
+        Map<String, Object> details = new HashMap<>();
+        details.put("requestCurrency", ex.getRequestCurrency());
+        details.put("accountCurrency", ex.getAccountCurrency());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 ex.getMessage(),
                 ex.getErrorCode(),
                 request.getRequestURI(),
@@ -83,7 +101,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getMessage(),
                 ex.getErrorCode(),
                 request.getRequestURI()
@@ -101,7 +118,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getMessage(),
                 ex.getErrorCode(),
                 request.getRequestURI()
@@ -119,7 +135,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 ex.getMessage(),
                 ex.getErrorCode(),
                 request.getRequestURI()
@@ -194,7 +209,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 message,
                 "MALFORMED_REQUEST",
                 request.getRequestURI()
@@ -215,13 +229,29 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 message,
                 "TYPE_MISMATCH",
                 request.getRequestURI()
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(
+            ObjectOptimisticLockingFailureException ex,
+            HttpServletRequest request) {
+
+        log.warn("Optimistic locking failure detected: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "The resource was modified by another transaction. Please retry your operation.",
+                "CONCURRENT_MODIFICATION",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
@@ -233,7 +263,6 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
                 "An unexpected error occurred. Please try again later.",
                 "INTERNAL_ERROR",
                 request.getRequestURI()
