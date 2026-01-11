@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# CI/CD
+.github
+
+# Documentation
+*.md
+docs/
+ARCHITECTURE.md
+README.md
+
+# IDE
+.idea
+.vscode
+*.iml
+*.iws
+*.ipr
+
+# Build artifacts
+target/
+!target/*.jar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tests
+test-optimistic-locking.sh
+
+# Docker
+Dockerfile
+docker-compose.yml

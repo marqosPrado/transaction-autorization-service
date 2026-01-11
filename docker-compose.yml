@@ -19,14 +19,34 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+    networks:
+      - payment-processor-network
 
   database:
     image: postgres:17-alpine
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_PASSWORD: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+    networks:
+      - payment-processor-network
+
+  transaction-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_started
+    networks:
+      - payment-processor-network
+
 
   message-generator:
     image: golang:1.24.3
@@ -60,3 +80,9 @@ services:
         go run message-generator.go
       "
     working_dir: /home
+    networks:
+      - payment-processor-network
+
+networks:
+  payment-processor-network:
+    driver: bridge

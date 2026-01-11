@@ -105,18 +105,17 @@ Para mais detalhes, consulte a [documentação de arquitetura](docs/architecture
 
 Antes de começar, certifique-se de ter instalado:
 
-- **Java 21** ou superior ([Download](https://openjdk.org/))
 - **Docker** e **Docker Compose** ([Download](https://www.docker.com/get-started))
-- **Maven 3.9+** (ou use o wrapper `./mvnw` incluído)
 - **AWS CLI** (opcional, para testar a fila SQS) ([Download](https://aws.amazon.com/cli/))
 - **Git** ([Download](https://git-scm.com/))
+
+**Nota**: Não é necessário ter Java ou Maven instalados localmente. O build é feito completamente dentro do Docker.
 
 ### Verificar instalação
 
 ```bash
-java -version    # Deve mostrar Java 21+
-docker --version # Deve mostrar Docker 20.10+
-mvn --version   # Deve mostrar Maven 3.9+
+docker --version         # Deve mostrar Docker 20.10+
+docker compose version   # Deve mostrar Compose v2.0+
 ```
 
 ## Instalação
@@ -128,24 +127,15 @@ git clone https://github.com/marqosPrado/transaction-autorization-service.git
 cd transaction-autorization-service
 ```
 
-### 2. Inicie os serviços de infraestrutura
+### 2. Configure as variáveis de ambiente
 
-```bash
-docker compose up -d
-```
-
-Isso irá iniciar:
-- **LocalStack** (AWS SQS) na porta 4566
-- **PostgreSQL** na porta 5432
-- **Message Generator**
-
-### 3. Configure as variáveis de ambiente
-
-Crie um arquivo `.env` na raiz do projeto ou exporte as variáveis:
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
 
 ```bash
 ENVIRONMENT=dev
 
+POSTGRES_HOST=database
+POSTGRES_PORT=5432
 POSTGRES_DB=transactions
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
@@ -154,29 +144,33 @@ AWS_REGION=sa-east-1
 AWS_ACCESS_KEY_ID=test
 AWS_SECRET_ACCESS_KEY=test
 
-AWS_SQS_ENDPOINT=http://localhost:4566/000000000000/
+AWS_SQS_ENDPOINT=http://localstack:4566/000000000000/
 AWS_SQS_QUEUE_NAME=conta-bancaria-criada
 ```
 
-### 3. Defina as variáveis de ambiente
-
-````bash
-export $(cat .env | xargs) 
-````
-
-### 4. Compile o projeto
+### 3. Inicie todos os serviços
 
 ```bash
-./mvnw clean install
+docker compose up -d
 ```
 
-### 5. Execute a aplicação
-
-```bash
-./mvnw spring-boot:run
-```
+Este comando irá:
+1. **Compilar a aplicação**
+2. **Criar a imagem Docker** da aplicação
+3. **Iniciar todos os serviços**:
+   - Transaction Service (porta 8080)
+   - PostgreSQL (porta 5432)
+   - LocalStack/AWS SQS (porta 4566)
+   - Message Generator (gerador de contas)
 
 A aplicação estará disponível em `http://localhost:8080`.
+
+### 4. Verificar status dos serviços
+
+```bash
+docker compose ps
+docker compose logs transaction-service --tail=50
+```
 
 ## Configuração
 
