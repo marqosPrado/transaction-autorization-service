@@ -27,7 +27,6 @@ Este projeto foi desenvolvido como parte de um desafio técnico para demonstrar 
 - [Uso](#uso)
 - [API Endpoints](#api-endpoints)
 - [Testes](#testes)
-- [Decisões Arquiteturais](#decisões-arquiteturais)
 
 ## Funcionalidades
 
@@ -42,29 +41,7 @@ Este projeto foi desenvolvido como parte de um desafio técnico para demonstrar 
 
 ## Arquitetura
 
-O projeto foi baseado em alguns princípios de **Clean Architecture**:
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Presentation Layer                       │
-│                (REST Controllers & DTOs)                     │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                     Application Layer                        │
-│               (Use Cases & Commands)                         │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                       Domain Layer                           │
-│    (Entities, Repositories, Strategies, Business Logic)      │
-└─────────────────────────────────────────────────────────────┘
-                              ↓
-┌─────────────────────────────────────────────────────────────┐
-│                   Infrastructure Layer                       │
-│         (JPA, AWS SQS, Persistence, Messaging)               │
-└─────────────────────────────────────────────────────────────┘
-```
+![img.png](docs/architecture/diagrama-de-design.png)
 
 ### Padrões de Design Utilizados
 
