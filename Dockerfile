@@ -11,7 +11,7 @@ RUN ./mvnw dependency:go-offline -B
 
 COPY src ./src
 
-RUN ./mvnw clean package
+RUN ./mvnw clean package -DskipTests
 
 FROM eclipse-temurin:21-jre-alpine
 LABEL authors="Marcos Prado"
@@ -19,8 +19,6 @@ LABEL authors="Marcos Prado"
 WORKDIR /app
 
 COPY --from=builder /build/target/transaction-autorization-service-0.0.1-SNAPSHOT.jar /app/transaction-autorization-service.jar
-
-COPY .env /app
 
 EXPOSE 8080
 
