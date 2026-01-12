@@ -32,7 +32,7 @@ curl -X POST http://localhost:8080/api/v1/transactions \
   -H "Accept: application/json" \
   -d '{
     "accountId": "5b19c8b6-0cc4-4c72-a989-0c2ee15fa975",
-    "type": "CREDIT",
+    "operationType": "CREDIT",
     "value": "150.00",
     "currency": "BRL"
   }' \
